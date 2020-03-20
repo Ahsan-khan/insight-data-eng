@@ -6,7 +6,7 @@ import sys
 
 from operator import itemgetter
 
-file_fied_names = [
+file_field_names = [
     'date_received', 'product', 'sub_product', 'issue', 'sub_issue',
     'consumer_complaint_narrative', 'company_public_resource', 'company',
     'state', 'zip_code', 'tags', 'consumer_consent_provided', 'submitted_via',
@@ -21,7 +21,7 @@ def read_and_parse(file_path):
     product as the key and the rest of the info as the values
     for the key"""
     with open(file_path, 'r') as fh:
-        reader = csv.DictReader(fh, fieldnames=file_fied_names)
+        reader = csv.DictReader(fh, fieldnames=file_field_names)
         header = next(reader, None)
 
         tracker = {}
