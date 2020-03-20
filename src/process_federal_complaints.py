@@ -186,14 +186,13 @@ def combine_aggregated_data(file_path, output):
         writer = csv.DictWriter(fh, fieldnames=file_field_names)
         writer.writeheader()
         writer.writerows(rows)  # Write the rows to the output file
-    print(f"Written the output of {len(rows)} rows , to {output}")
+    print("Written the output of {} rows , to {}".format(len(rows), output))
 
 
 def usage():
     print("Wrong number of arguments.\n")
-    print(
-        f"Call script as $ {sys.argv[0]} <input_complaints_csv> <output_report_csv>"
-    )
+    print("Call script as $ {} <input_complaints_csv> <output_report_csv>".
+          format(sys.argv[0]))
     sys.exit(1)
 
 
@@ -204,8 +203,8 @@ if __name__ == '__main__':
         input_file = sys.argv[1]
         output_file = sys.argv[2]
         print(
-            f"Using the file {input_file} as the input. Report will be sent to {output_file}"
-        )
+            "Using the file {} as the input. Report will be sent to {}".format(
+                input_file, output_file))
         combine_aggregated_data(file_path=input_file, output=output_file)
     except Exception as e:
         print(f"Error {e}")
