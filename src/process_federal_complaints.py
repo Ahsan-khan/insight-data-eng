@@ -184,7 +184,6 @@ def combine_aggregated_data(file_path, output):
 
     with open(output, 'w') as fh:
         writer = csv.DictWriter(fh, fieldnames=file_field_names)
-        writer.writeheader()
         writer.writerows(rows)  # Write the rows to the output file
     print("Written the output of {} rows , to {}".format(len(rows), output))
 
