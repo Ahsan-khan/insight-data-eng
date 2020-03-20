@@ -207,4 +207,4 @@ if __name__ == '__main__':
                 input_file, output_file))
         combine_aggregated_data(file_path=input_file, output=output_file)
     except Exception as e:
-        print(f"Error {e}")
+        print("Error {}".format(e))
