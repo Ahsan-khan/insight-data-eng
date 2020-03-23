@@ -12,7 +12,7 @@ file_field_names = [
     'state', 'zip_code', 'tags', 'consumer_consent_provided', 'submitted_via',
     'date_sent_to_company', 'company_response_to_customer', 'timely_response',
     'consumer_disputed', 'complaint_id'
-]
+]  # This are the headers in order for the input complaints document
 
 
 def read_and_parse(file_path):
@@ -21,7 +21,9 @@ def read_and_parse(file_path):
     product as the key and the rest of the info as the values
     for the key"""
     with open(file_path, 'r', encoding="utf8") as fh:
-        reader = csv.DictReader(fh, fieldnames=file_field_names)
+        reader = csv.DictReader(
+            fh, fieldnames=file_field_names
+        )  # Open the input complaints file and create a csv reader object
         header = next(reader, None)
 
         tracker = {}
@@ -37,7 +39,9 @@ def read_and_parse(file_path):
 
             if product not in tracker:
                 tracker[product] = []
-            tracker[product].append(info)
+            tracker[product].append(
+                info
+            )  # Track each complaint with the product as the key and the other occurences and their year as dict values
         return tracker
 
 
@@ -63,7 +67,7 @@ def aggregate_data(product_tracker):
                 # If we have not yet tracked this year's complaints start tracking by initializing an empty dict
                 tracker[product][year] = {}
                 tracker[product][year][
-                    'total'] = 1  # for this current loop set total complaints for this product for this year to 1 (initialized)
+                    'total'] = 1  # for this current loop set total complaints for this product for this year to 1 (initialized), Since this first time also counts we initiliaze to 1
                 tracker[product][year][
                     'companies_receiving_complaint'] = 0  # initiliaze how many times different companies have had complaints
                 if company not in tracker[product][year]:
@@ -140,6 +144,18 @@ def get_highest_percentage(product_tracker):
 
 
 def combine_aggregated_data(file_path, output):
+    """
+    Given a complaints file and an output path
+    parse the complaints file and create a dictionary from the contents with the product as the key and the year per company info as values.
+
+    After parsing the complaints file get the totals computed by the aggregate_data() function for each product/year/company combinations
+
+    Also using the parsed complaints file content using the get_highest_percentage() get the highest percentage ratio company for all product/year/company combinations
+
+    Then go through all the totals aggregates and get their respective highest percentages from the highest percentage. Sort the resulting list first by year then by product.
+
+    FInally go through the comnbined aggregated data and create a csv Writer with the passed output file as the destination and write each row
+    """
     # Get and organize data from the file
     tracker = read_and_parse(file_path)
     # Get the totals aggregates
@@ -172,7 +188,7 @@ def combine_aggregated_data(file_path, output):
             }
             # Write this row here or append them and write at the end once
             rows.append(row)
-    # Write the rows to the csv file, these are the headers names for the output
+    # Set the fields for the final tracking dict so that we can solve by the column names
     file_field_names = [
         'product', 'year', 'total_complaints',
         'total_companies_at_least_one_complaint', 'highest_percentage'
@@ -189,18 +205,27 @@ def combine_aggregated_data(file_path, output):
 
 
 def usage():
+    """
+    Function to make sure this script is called with two arguments
+
+    First argument is the complaints file second is the output file.
+
+    It's called when arguments are less than 2.
+    """
     print("Wrong number of arguments.\n")
     print("Call script as $ {} <input_complaints_csv> <output_report_csv>".
           format(sys.argv[0]))
-    sys.exit(1)
+    sys.exit(1)  # Exit with error code 1 , not successful
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # Ensure this script does not execute when it's imported but it executes when called in the commandline
     try:
-        if len(sys.argv) < 3:
+        if len(
+                sys.argv
+        ) < 3:  # Ensure the input file and output file are provided when calling this script
             usage()
-        input_file = sys.argv[1]
-        output_file = sys.argv[2]
+        input_file = sys.argv[1]  # First arg is the input complaints file
+        output_file = sys.argv[2]  # Second arg is the output report file
         print(
             "Using the file {} as the input. Report will be sent to {}".format(
                 input_file, output_file))
